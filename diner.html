@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dîner — La Carte</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#17140F;
+    --surface:#201B14;
+    --surface-2:#2A241A;
+    --ivory:#F4EDE1;
+    --muted:#AFA28B;
+    --gold:#C9A15A;
+    --gold-dim:#8A723F;
+    --sage:#7C8C6B;
+    --border:rgba(244,237,225,0.14);
+    --border-strong:rgba(244,237,225,0.24);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ivory);
+    font-family:'Jost',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{
+    max-width:640px;
+    margin:0 auto;
+    padding:64px 24px 96px;
+  }
+  .eyebrow{
+    text-align:center;
+    font-size:12px;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin:0 0 18px;
+  }
+  h1.title{
+    font-family:'Cormorant Garamond',serif;
+    font-weight:500;
+    font-size:52px;
+    text-align:center;
+    margin:0 0 8px;
+    letter-spacing:0.01em;
+  }
+  .subtitle{
+    text-align:center;
+    color:var(--muted);
+    font-size:15px;
+    margin:0 0 40px;
+  }
+  .flourish{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    margin:0 0 40px;
+    color:var(--gold-dim);
+  }
+  .flourish .line{
+    height:1px;
+    width:80px;
+    background:linear-gradient(90deg,transparent,var(--gold-dim));
+  }
+  .flourish .line.right{
+    background:linear-gradient(90deg,var(--gold-dim),transparent);
+  }
+  .flourish svg{ width:18px; height:18px; }
+
+  .card{
+    background:var(--surface);
+    border:0.5px solid var(--border);
+    border-radius:4px;
+    padding:36px 32px;
+    margin-bottom:40px;
+  }
+  .card h2{
+    font-family:'Cormorant Garamond',serif;
+    font-size:14px;
+    font-weight:600;
+    letter-spacing:0.22em;
+    text-transform:uppercase;
+    color:var(--gold);
+    text-align:center;
+    margin:0 0 30px;
+  }
+  .course{
+    padding:18px 0;
+    border-bottom:0.5px solid var(--border);
+    text-align:center;
+  }
+  .course:last-child{ border-bottom:none; padding-bottom:0; }
+  .course:first-child{ padding-top:0; }
+  .course .label{
+    font-size:11px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--sage);
+    margin:0 0 6px;
+  }
+  .course .dish{
+    font-family:'Cormorant Garamond',serif;
+    font-size:26px;
+    font-style:italic;
+    font-weight:500;
+    margin:0 0 6px;
+  }
+  .course .desc{
+    font-size:14px;
+    color:var(--muted);
+    margin:0;
+    line-height:1.6;
+  }
+
+  .card.form h2{ margin-bottom:8px; }
+  .form-intro{
+    text-align:center;
+    color:var(--muted);
+    font-size:14px;
+    margin:0 0 28px;
+  }
+  label{
+    display:block;
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin:0 0 8px;
+  }
+  .field{ margin-bottom:22px; }
+  input[type=text], select, textarea{
+    width:100%;
+    background:var(--surface-2);
+    border:0.5px solid var(--border-strong);
+    color:var(--ivory);
+    font-family:'Jost',sans-serif;
+    font-size:15px;
+    padding:12px 14px;
+    border-radius:3px;
+    outline:none;
+  }
+  input[type=text]:focus, select:focus, textarea:focus{
+    border-color:var(--gold-dim);
+    box-shadow:0 0 0 1px var(--gold-dim);
+  }
+  textarea{ resize:vertical; min-height:80px; font-family:'Jost',sans-serif; }
+  select{ appearance:none; cursor:pointer; }
+
+  .stars{ display:flex; gap:8px; }
+  .stars button{
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:0;
+    font-size:30px;
+    line-height:1;
+    color:var(--border-strong);
+    transition:color .15s ease, transform .15s ease;
+  }
+  .stars button.filled{ color:var(--gold); }
+  .stars button:hover{ transform:scale(1.12); }
+
+  .submit-row{ display:flex; justify-content:center; margin-top:32px; }
+  .seal{
+    width:96px;
+    height:96px;
+    border-radius:50%;
+    background:var(--surface-2);
+    border:1px solid var(--gold-dim);
+    color:var(--gold);
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    font-size:15px;
+    letter-spacing:0.02em;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    transition:background .15s ease, color .15s ease, transform .1s ease;
+  }
+  .seal:hover{ background:var(--gold-dim); color:var(--bg); }
+  .seal:active{ transform:scale(0.97); }
+  .seal:disabled{ opacity:0.5; cursor:default; }
+
+  .status-msg{
+    text-align:center;
+    font-size:13px;
+    color:var(--sage);
+    margin-top:16px;
+    min-height:18px;
+  }
+
+  .summary{
+    display:flex;
+    align-items:baseline;
+    justify-content:center;
+    gap:10px;
+    margin-bottom:28px;
+  }
+  .summary .num{
+    font-family:'Cormorant Garamond',serif;
+    font-size:44px;
+    font-weight:500;
+    color:var(--gold);
+  }
+  .summary .of5{ color:var(--muted); font-size:15px; }
+  .summary .count{
+    font-size:13px;
+    color:var(--muted);
+    text-align:center;
+    margin:-18px 0 30px;
+  }
+
+  .review{
+    padding:16px 0;
+    border-bottom:0.5px solid var(--border);
+  }
+  .review:last-child{ border-bottom:none; }
+  .review-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:6px;
+  }
+  .review-name{ font-size:15px; font-weight:500; }
+  .review-stars{ color:var(--gold); font-size:14px; letter-spacing:2px; }
+  .review-dish{
+    font-size:11px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--sage);
+    margin:0 0 6px;
+  }
+  .review-comment{
+    font-size:14px;
+    color:var(--muted);
+    line-height:1.6;
+    margin:0;
+  }
+  .empty{
+    text-align:center;
+    color:var(--muted);
+    font-size:14px;
+    font-style:italic;
+    padding:20px 0;
+  }
+  .loading{
+    text-align:center;
+    color:var(--muted);
+    font-size:13px;
+  }
+</style>
+<script>
+  // ====== CONFIGURATION GITHUB ======
+  // Remplace les valeurs ci-dessous par les tiennes
+  window.__GITHUB_CONFIG__ = {
+    owner: "Yayourte",
+    repo: "diner-en-Croatie",
+    token: "COLLE_TON_TOKEN_ICI",     // token fine-grained, permission Issues: read & write, limité à ce repo
+    label: "avis"
+  };
+  // ====== FIN CONFIGURATION ======
+</script>
+</head>
+<body>
+<div class="wrap">
+
+  <p class="eyebrow">Vous êtes invités</p>
+  <h1 class="title">Une soirée en Croatie</h1>
+  <p class="subtitle">Aux fourneaux : Mylène &amp; Bastien · à personnaliser avec votre date</p>
+
+  <div class="flourish">
+    <span class="line"></span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M12 2v20M4 8c4 0 4-4 8-4s4 4 8 4M4 16c4 0 4 4 8 4s4-4 8-4"/></svg>
+    <span class="line right"></span>
+  </div>
+
+  <div class="card">
+    <h2>La carte</h2>
+
+    <div class="course">
+      <p class="label">Apéritif</p>
+      <p class="dish">Pršut, sir &amp; olives</p>
+      <p class="desc">Jambon fumé dalmate, fromage de brebis de l'île de Pag et olives locales, trouvés sur n'importe quel marché côtier.</p>
+    </div>
+
+    <div class="course">
+      <p class="label">Entrée</p>
+      <p class="dish">Salata šopska</p>
+      <p class="desc">Tomates, concombre, oignon rouge et fromage local râpé, arrosés d'huile d'olive — rien à cuire, tout à couper.</p>
+    </div>
+
+    <div class="course">
+      <p class="label">Plat</p>
+      <p class="dish">Poisson grillé, blitva krumpirima</p>
+      <p class="desc">Loup ou dorade à la plancha, quelques minutes de chaque côté. Blettes et pommes de terre bouillies, écrasées à l'huile d'olive et à l'ail.</p>
+    </div>
+
+    <div class="course">
+      <p class="label">Dessert</p>
+      <p class="dish">Figues fraîches, miel &amp; yaourt</p>
+      <p class="desc">Figues coupées en deux, un filet de miel local et du yaourt grec — aucune cuisson, cinq minutes de dressage.</p>
+    </div>
+
+    <div class="course">
+      <p class="label">Vin</p>
+      <p class="dish">Pošip ou Plavac Mali</p>
+      <p class="desc">Un blanc de Korčula pour le poisson, ou un rouge de Pelješac si l'envie de viande grillée l'emporte.</p>
+    </div>
+  </div>
+
+  <div class="flourish">
+    <span class="line"></span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="12" r="3"/><path d="M12 2v6M12 16v6M2 12h6M16 12h6"/></svg>
+    <span class="line right"></span>
+  </div>
+
+  <div class="card form">
+    <h2>Votre avis</h2>
+    <p class="form-intro">Un mot sur le repas, ça fait toujours plaisir au cuisinier.</p>
+
+    <div class="field">
+      <label for="f-name">Votre prénom</label>
+      <input type="text" id="f-name" placeholder="Camille">
+    </div>
+
+    <div class="field">
+      <label>Note globale</label>
+      <div class="stars" id="f-stars">
+        <button type="button" data-v="1">★</button>
+        <button type="button" data-v="2">★</button>
+        <button type="button" data-v="3">★</button>
+        <button type="button" data-v="4">★</button>
+        <button type="button" data-v="5">★</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="f-dish">Plat préféré</label>
+      <select id="f-dish">
+        <option value="Apéritif">Apéritif</option>
+        <option value="Entrée">Entrée</option>
+        <option value="Plat" selected>Plat</option>
+        <option value="Dessert">Dessert</option>
+        <option value="Vin">Vin</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="f-comment">Commentaire</label>
+      <textarea id="f-comment" placeholder="Qu'avez-vous pensé du repas ?"></textarea>
+    </div>
+
+    <div class="submit-row">
+      <button class="seal" id="f-submit">Envoyer<br>mon avis</button>
+    </div>
+    <p class="status-msg" id="f-status"></p>
+  </div>
+
+  <div class="flourish">
+    <span class="line"></span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M12 2v20M4 8c4 0 4-4 8-4s4 4 8 4M4 16c4 0 4 4 8 4s4-4 8-4"/></svg>
+    <span class="line right"></span>
+  </div>
+
+  <div class="card">
+    <h2>Avis des convives</h2>
+    <div id="reviews-area"><p class="loading">Chargement des avis…</p></div>
+  </div>
+
+</div>
+
+<script>
+let selectedStars = 0;
+const starsEl = document.getElementById('f-stars');
+starsEl.addEventListener('click', (e) => {
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  selectedStars = parseInt(btn.dataset.v, 10);
+  renderStars();
+});
+function renderStars(){
+  [...starsEl.children].forEach(b => {
+    b.classList.toggle('filled', parseInt(b.dataset.v,10) <= selectedStars);
+  });
+}
+
+function githubHeaders(){
+  return {
+    Authorization: 'Bearer ' + window.__GITHUB_CONFIG__.token,
+    Accept: 'application/vnd.github+json'
+  };
+}
+
+async function loadReviews(){
+  const area = document.getElementById('reviews-area');
+  const { owner, repo, label } = window.__GITHUB_CONFIG__;
+  try{
+    const url = `https://api.github.com/repos/${owner}/${repo}/issues?labels=${label}&state=all&per_page=100`;
+    const res = await fetch(url, { headers: githubHeaders() });
+    if(!res.ok) throw new Error('github fetch failed');
+    const issues = await res.json();
+    const reviews = issues.map(issue => {
+      try{
+        const data = JSON.parse(issue.body);
+        return { ...data, ts: data.ts || new Date(issue.created_at).getTime() };
+      }catch(e){ return null; }
+    }).filter(Boolean);
+    if(reviews.length === 0){
+      area.innerHTML = '<p class="empty">Aucun avis pour l\'instant. Soyez le premier à laisser le vôtre.</p>';
+      return;
+    }
+    reviews.sort((a,b) => (b.ts||0) - (a.ts||0));
+    renderReviews(reviews, area);
+  }catch(e){
+    area.innerHTML = '<p class="empty">Impossible de charger les avis pour l\'instant. Vérifie la configuration GitHub.</p>';
+  }
+}
+
+function renderReviews(reviews, area){
+  if(reviews.length === 0){
+    area.innerHTML = '<p class="empty">Aucun avis pour l\'instant. Soyez le premier à laisser le vôtre.</p>';
+    return;
+  }
+  const avg = reviews.reduce((s,r) => s + r.stars, 0) / reviews.length;
+  const summaryHtml = `
+    <div class="summary"><span class="num">${avg.toFixed(1)}</span><span class="of5">/ 5</span></div>
+    <p class="count">${reviews.length} avis</p>
+  `;
+  const listHtml = reviews.map(r => `
+    <div class="review">
+      <div class="review-top">
+        <span class="review-name">${escapeHtml(r.name)}</span>
+        <span class="review-stars">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</span>
+      </div>
+      <p class="review-dish">${escapeHtml(r.dish)}</p>
+      ${r.comment ? `<p class="review-comment">${escapeHtml(r.comment)}</p>` : ''}
+    </div>
+  `).join('');
+  area.innerHTML = summaryHtml + listHtml;
+}
+
+function escapeHtml(str){
+  const d = document.createElement('div');
+  d.textContent = str || '';
+  return d.innerHTML;
+}
+
+document.getElementById('f-submit').addEventListener('click', async () => {
+  const name = document.getElementById('f-name').value.trim();
+  const dish = document.getElementById('f-dish').value;
+  const comment = document.getElementById('f-comment').value.trim();
+  const statusEl = document.getElementById('f-status');
+  const submitBtn = document.getElementById('f-submit');
+
+  if(!name){
+    statusEl.style.color = '#C97B63';
+    statusEl.textContent = 'Merci d\'indiquer votre prénom.';
+    return;
+  }
+  if(selectedStars === 0){
+    statusEl.style.color = '#C97B63';
+    statusEl.textContent = 'Merci de choisir une note.';
+    return;
+  }
+
+  submitBtn.disabled = true;
+  statusEl.style.color = '';
+  statusEl.textContent = 'Envoi en cours…';
+
+  const entry = { name, stars: selectedStars, dish, comment, ts: Date.now() };
+
+  try{
+    const { owner, repo, label } = window.__GITHUB_CONFIG__;
+    const url = `https://api.github.com/repos/${owner}/${repo}/issues`;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { ...githubHeaders(), 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: `Avis de ${name}`,
+        body: JSON.stringify(entry),
+        labels: [label]
+      })
+    });
+    if(!res.ok) throw new Error('github post failed');
+    statusEl.textContent = 'Merci pour votre avis !';
+    document.getElementById('f-name').value = '';
+    document.getElementById('f-comment').value = '';
+    selectedStars = 0;
+    renderStars();
+    loadReviews();
+  }catch(e){
+    statusEl.style.color = '#C97B63';
+    statusEl.textContent = 'Un souci est survenu, réessayez.';
+  }finally{
+    submitBtn.disabled = false;
+  }
+});
+
+loadReviews();
+</script>
+</body>
+</html>
