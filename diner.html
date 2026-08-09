@@ -398,6 +398,8 @@ function githubHeaders(){
   };
 }
 
+let currentReviews = [];
+
 async function loadReviews(){
   const area = document.getElementById('reviews-area');
   const { owner, repo, label } = window.__GITHUB_CONFIG__;
@@ -412,6 +414,7 @@ async function loadReviews(){
         return { ...data, ts: data.ts || new Date(issue.created_at).getTime() };
       }catch(e){ return null; }
     }).filter(Boolean);
+    currentReviews = reviews;
     if(reviews.length === 0){
       area.innerHTML = '<p class="empty">Aucun avis pour l\'instant. Soyez le premier à laisser le vôtre.</p>';
       return;
@@ -494,6 +497,8 @@ document.getElementById('f-submit').addEventListener('click', async () => {
     document.getElementById('f-comment').value = '';
     selectedStars = 0;
     renderStars();
+    currentReviews = [entry, ...currentReviews];
+    renderReviews(currentReviews, document.getElementById('reviews-area'));
     loadReviews();
   }catch(e){
     statusEl.style.color = '#C97B63';
