@@ -391,21 +391,33 @@
         margin: -18px 0 30px;
       }
 
+      .reviews-carousel {
+        display: flex;
+        gap: 14px;
+        overflow-x: auto;
+        padding: 8px 4px 8px;
+        scroll-snap-type: x proximity;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .reviews-carousel::-webkit-scrollbar {
+        display: none;
+      }
       .review {
-        padding: 18px 0 16px;
-        border-bottom: 1px solid rgba(29, 53, 83, 0.16);
-      }
-      .review:first-child {
-        padding-top: 8px;
-      }
-      .review:last-child {
-        border-bottom: none;
+        flex: 0 0 240px;
+        background: rgba(255, 255, 255, 0.18);
+        border: 1px solid rgba(29, 53, 83, 0.1);
+        border-radius: 18px;
+        padding: 16px 14px;
+        scroll-snap-align: start;
+        box-shadow: 0 8px 18px rgba(17, 31, 49, 0.04);
       }
       .review-top {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 6px;
+        margin-bottom: 8px;
+        gap: 8px;
       }
       .review-name {
         font-size: 15px;
@@ -415,13 +427,14 @@
         color: var(--gold);
         font-size: 14px;
         letter-spacing: 2px;
+        white-space: nowrap;
       }
       .review-dish {
         font-size: 11px;
         letter-spacing: 0.12em;
         text-transform: uppercase;
         color: var(--sage);
-        margin: 0 0 6px;
+        margin: 0 0 8px;
       }
       .review-comment {
         font-size: 14px;
@@ -572,6 +585,17 @@
 
         .summary .num {
           font-size: 36px;
+        }
+
+        .reviews-carousel {
+          gap: 10px;
+          padding-left: 2px;
+          padding-right: 2px;
+        }
+
+        .review {
+          flex-basis: 84%;
+          min-width: 84%;
         }
 
         .review-top {
@@ -867,33 +891,37 @@
     <div class="summary"><span class="num">${avg.toFixed(1)}</span><span class="of5">/ 5</span></div>
     <p class="count">${reviews.length} avis</p>
   `;
-        const listHtml = reviews
-          .map((r) => {
-            const detailEntries = Object.entries(r.dishScores || {})
-              .filter(([, value]) => Number(value) > 0)
-              .map(
-                ([dish, value]) => `
-                  <div class="review-score-line">
-                    <span>${escapeHtml(dish)}</span>
-                    <span class="review-score-stars-small">${"★".repeat(Number(value))}${"☆".repeat(5 - Number(value))}</span>
-                  </div>
-                `,
-              )
-              .join("");
+        const listHtml = `
+          <div class="reviews-carousel">
+            ${reviews
+              .map((r) => {
+                const detailEntries = Object.entries(r.dishScores || {})
+                  .filter(([, value]) => Number(value) > 0)
+                  .map(
+                    ([dish, value]) => `
+                      <div class="review-score-line">
+                        <span>${escapeHtml(dish)}</span>
+                        <span class="review-score-stars-small">${"★".repeat(Number(value))}${"☆".repeat(5 - Number(value))}</span>
+                      </div>
+                    `,
+                  )
+                  .join("");
 
-            return `
-    <div class="review">
-      <div class="review-top">
-        <span class="review-name">${escapeHtml(r.name)}</span>
-        <span class="review-stars">${"★".repeat(r.stars)}${"☆".repeat(5 - r.stars)}</span>
-      </div>
-      <p class="review-dish">${escapeHtml(r.dish)}</p>
-      ${r.comment ? `<p class="review-comment">${escapeHtml(r.comment)}</p>` : ""}
-      ${detailEntries ? `<div class="review-detail">${detailEntries}</div>` : ""}
-    </div>
-  `;
-          })
-          .join("");
+                return `
+                  <article class="review">
+                    <div class="review-top">
+                      <span class="review-name">${escapeHtml(r.name)}</span>
+                      <span class="review-stars">${"★".repeat(r.stars)}${"☆".repeat(5 - r.stars)}</span>
+                    </div>
+                    <p class="review-dish">${escapeHtml(r.dish)}</p>
+                    ${r.comment ? `<p class="review-comment">${escapeHtml(r.comment)}</p>` : ""}
+                    ${detailEntries ? `<div class="review-detail">${detailEntries}</div>` : ""}
+                  </article>
+                `;
+              })
+              .join("")}
+          </div>
+        `;
         area.innerHTML = summaryHtml + listHtml;
       }
 
