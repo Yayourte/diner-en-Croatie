@@ -910,7 +910,9 @@
                     `,
                   )
                   .join("");
-                const displayStars = Math.round(Number(r.average ?? r.stars ?? 0));
+                const displayStars = Math.round(
+                  Number(r.average ?? r.stars ?? 0),
+                );
 
                 return `
                   <article class="review">
