@@ -426,6 +426,28 @@
         line-height: 1.6;
         margin: 0;
       }
+      .review-detail {
+        display: grid;
+        gap: 6px;
+        margin-top: 12px;
+        padding-top: 10px;
+        border-top: 0.5px solid var(--border);
+      }
+      .review-score-line {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .review-score-stars-small {
+        color: var(--gold);
+        font-size: 11px;
+        letter-spacing: 1px;
+      }
       .empty {
         text-align: center;
         color: var(--muted);
@@ -843,8 +865,20 @@
     <p class="count">${reviews.length} avis</p>
   `;
         const listHtml = reviews
-          .map(
-            (r) => `
+          .map((r) => {
+            const detailEntries = Object.entries(r.dishScores || {})
+              .filter(([, value]) => Number(value) > 0)
+              .map(
+                ([dish, value]) => `
+                  <div class="review-score-line">
+                    <span>${escapeHtml(dish)}</span>
+                    <span class="review-score-stars-small">${"★".repeat(Number(value))}${"☆".repeat(5 - Number(value))}</span>
+                  </div>
+                `,
+              )
+              .join("");
+
+            return `
     <div class="review">
       <div class="review-top">
         <span class="review-name">${escapeHtml(r.name)}</span>
@@ -852,9 +886,10 @@
       </div>
       <p class="review-dish">${escapeHtml(r.dish)}</p>
       ${r.comment ? `<p class="review-comment">${escapeHtml(r.comment)}</p>` : ""}
+      ${detailEntries ? `<div class="review-detail">${detailEntries}</div>` : ""}
     </div>
-  `,
-          )
+  `;
+          })
           .join("");
         area.innerHTML = summaryHtml + listHtml;
       }
