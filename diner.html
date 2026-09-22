@@ -922,7 +922,9 @@
                   Number(r.average ?? r.stars ?? 0),
                 );
 
-                const averageValue = Number(r.average ?? r.stars ?? 0).toFixed(1);
+                const averageValue = Number(r.average ?? r.stars ?? 0).toFixed(
+                  1,
+                );
 
                 return `
                   <article class="review">
