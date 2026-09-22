@@ -886,7 +886,11 @@
             '<p class="empty">Aucun avis pour l\'instant. Soyez le premier à laisser le vôtre.</p>';
           return;
         }
-        const avg = reviews.reduce((s, r) => s + r.stars, 0) / reviews.length;
+        const avg =
+          reviews.reduce(
+            (sum, r) => sum + Number(r.average ?? r.stars ?? 0),
+            0,
+          ) / reviews.length;
         const summaryHtml = `
     <div class="summary"><span class="num">${avg.toFixed(1)}</span><span class="of5">/ 5</span></div>
     <p class="count">${reviews.length} avis</p>
@@ -906,12 +910,13 @@
                     `,
                   )
                   .join("");
+                const displayStars = Math.round(Number(r.average ?? r.stars ?? 0));
 
                 return `
                   <article class="review">
                     <div class="review-top">
                       <span class="review-name">${escapeHtml(r.name)}</span>
-                      <span class="review-stars">${"★".repeat(r.stars)}${"☆".repeat(5 - r.stars)}</span>
+                      <span class="review-stars">${"★".repeat(displayStars)}${"☆".repeat(5 - displayStars)}</span>
                     </div>
                     <p class="review-dish">Plat préféré : ${escapeHtml(r.dish)}</p>
                     ${r.comment ? `<p class="review-comment">${escapeHtml(r.comment)}</p>` : ""}
@@ -958,7 +963,8 @@
           const averageScore = averageDishScores();
           const entry = {
             name,
-            stars: Math.round(averageScore),
+            stars: Number(averageScore.toFixed(1)),
+            average: Number(averageScore.toFixed(1)),
             dish,
             dishScores,
             comment,
