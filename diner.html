@@ -436,6 +436,14 @@
         color: var(--sage);
         margin: 0 0 8px;
       }
+      .review-preferred {
+        display: inline-block;
+        font-size: 10px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--gold-dim);
+        margin: 0 0 10px;
+      }
       .review-comment {
         font-size: 14px;
         color: var(--muted);
@@ -914,6 +922,7 @@
                       <span class="review-stars">${"★".repeat(r.stars)}${"☆".repeat(5 - r.stars)}</span>
                     </div>
                     <p class="review-dish">${escapeHtml(r.dish)}</p>
+                    <p class="review-preferred">Plat préféré : ${escapeHtml(r.dish)}</p>
                     ${r.comment ? `<p class="review-comment">${escapeHtml(r.comment)}</p>` : ""}
                     ${detailEntries ? `<div class="review-detail">${detailEntries}</div>` : ""}
                   </article>
