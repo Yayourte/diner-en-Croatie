@@ -429,6 +429,14 @@
         letter-spacing: 2px;
         white-space: nowrap;
       }
+      .review-average {
+        display: inline-block;
+        margin-left: 8px;
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        font-weight: 600;
+      }
       .review-dish {
         font-size: 11px;
         letter-spacing: 0.12em;
@@ -914,11 +922,16 @@
                   Number(r.average ?? r.stars ?? 0),
                 );
 
+                const averageValue = Number(r.average ?? r.stars ?? 0).toFixed(1);
+
                 return `
                   <article class="review">
                     <div class="review-top">
                       <span class="review-name">${escapeHtml(r.name)}</span>
-                      <span class="review-stars">${"★".repeat(displayStars)}${"☆".repeat(5 - displayStars)}</span>
+                      <span>
+                        <span class="review-stars">${"★".repeat(displayStars)}${"☆".repeat(5 - displayStars)}</span>
+                        <span class="review-average">${averageValue}</span>
+                      </span>
                     </div>
                     <p class="review-dish">Plat préféré : ${escapeHtml(r.dish)}</p>
                     ${r.comment ? `<p class="review-comment">${escapeHtml(r.comment)}</p>` : ""}
